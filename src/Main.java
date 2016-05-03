@@ -22,7 +22,6 @@ public class Main extends TestCase {
         testHashOverflow();
         testHashOverwrite();
         myWatch.stop();
-
     }
 
     private static void testHashAddItems() {
