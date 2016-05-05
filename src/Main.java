@@ -1,18 +1,20 @@
 import junit.framework.TestCase;
 
-import java.util.Dictionary;
-import java.util.Enumeration;
+import java.io.File;
+import java.util.Scanner;
 
 /**
  * Created by david on 4/19/16.
  */
 public class Main extends TestCase {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         Watch myWatch = new Watch("Blank");
         testHashMap();
         testPrimeNumberGenerator();
         testCustomEnumerator();
+        testCharArray();
+        testCharArrayWithMobyDick();
         myWatch.printResults();
     }
 
@@ -193,6 +195,50 @@ public class Main extends TestCase {
             enumerator.nextElement();
             i++;
         }
+        myWatch.stop();
+    }
+
+    private static void testCharArray() throws Exception {
+        Watch myWatch = new Watch("testCharArray");
+        myWatch.start();
+        CountChar myChars = new CountChar();
+        assertEquals('a', myChars.count("AAAAAAAabccasinoisonqosnoqsnoqson29290101kdwndkw eomoemd "));
+        assertEquals('o', myChars.count("abccasinoisonqosnoqsnoqson29290101kdwndkw eomoemd "));
+        assertEquals(' ', myChars.count(" "));
+        assertEquals('1', myChars.count("01234567891"));
+        assertEquals('9', myChars.count("999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999"));
+        assertEquals(' ', myChars.count("If you're reading this, you've been in a coma for almost 20 years now. We're trying a new technique. We don't know where this message will end up in your dream, but we hope it works. Please wake up, we miss you."));
+
+        try {
+            myChars.count("abc");
+        }
+        catch (Exception e) {
+            System.out.print("testCharArray: Exception for more than one highest frequency char was caught.\n");
+        }
+
+        try {
+            myChars.count("");
+        }
+        catch (IllegalArgumentException e) {
+            System.out.print("testCharArray: IllegalArgumentException was caught.\n");
+        }
+
+        try {
+            myChars.count(null);
+        }
+        catch (IllegalArgumentException e) {
+            System.out.print("testCharArray: IllegalArgumentException was caught.\n");
+        }
+        myWatch.stop();
+
+    }
+
+    private static void testCharArrayWithMobyDick() throws Exception {
+        Watch myWatch = new Watch("testCharArrayWithMobyDick");
+        myWatch.start();
+        CountChar myChars = new CountChar();
+        String content = new Scanner(new File("mobydick.txt")).useDelimiter("\\Z").next();
+        assertEquals(' ', myChars.count(content));
         myWatch.stop();
     }
 
