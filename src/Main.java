@@ -1,5 +1,8 @@
 import junit.framework.TestCase;
 
+import java.util.Dictionary;
+import java.util.Enumeration;
+
 /**
  * Created by david on 4/19/16.
  */
@@ -8,12 +11,13 @@ public class Main extends TestCase {
     public static void main(String[] args) {
         Watch myWatch = new Watch("Blank");
         testHashMap();
-//        testPrimeNumberGenerator();
+        testPrimeNumberGenerator();
+        testCustomEnumerator();
         myWatch.printResults();
     }
 
     private static void testHashMap() {
-        Watch myWatch = new Watch("HashMap");
+        Watch myWatch = new Watch("testHashMap");
         myWatch.start();
         testHashAddItems();
         testHashClear();
@@ -21,6 +25,8 @@ public class Main extends TestCase {
         testHashManipulate();
         testHashOverflow();
         testHashOverwrite();
+        testHashKeys();
+        testHashElements();
         myWatch.stop();
     }
 
@@ -35,6 +41,32 @@ public class Main extends TestCase {
         assertEquals((Integer) 2, myMap.get("two"));
         assertEquals((Integer) 3, myMap.get("three"));
         assertEquals((Integer) 4, myMap.get("four"));
+    }
+
+    private static void testHashKeys() {
+        HashMap myMap = new HashMap();
+        myMap.put("one", 1);
+        myMap.put("two", 2);
+        myMap.put("three", 3);
+        myMap.put("four", 4);
+        enumerator myEnum = myMap.keys();
+        assertEquals("four", myEnum.nextElement());
+        assertEquals("three", myEnum.nextElement());
+        assertEquals("one", myEnum.nextElement());
+        assertEquals("two", myEnum.nextElement());
+    }
+
+    private static void testHashElements() {
+        HashMap myMap = new HashMap();
+        myMap.put("one", 1);
+        myMap.put("two", 2);
+        myMap.put("three", 3);
+        myMap.put("four", 4);
+        enumerator myEnum = myMap.elements();
+        assertEquals(4, myEnum.nextElement());
+        assertEquals(3, myEnum.nextElement());
+        assertEquals(1, myEnum.nextElement());
+        assertEquals(2, myEnum.nextElement());
     }
 
     private static void testHashClear() {
@@ -53,7 +85,7 @@ public class Main extends TestCase {
         myMap.put("two", 2);
         myMap.put("three", 3);
         myMap.put("four", 4);
-        myMap.delete("three");
+        myMap.remove("three");
         assertNull(myMap.get("three"));
         myMap.clear();
     }
@@ -64,8 +96,8 @@ public class Main extends TestCase {
         assertNull(myMap.get(null));
         assertNull(myMap.get("one"));
         assertFalse(myMap.contains("one"));
-        myMap.delete(null);
-        myMap.delete("one");
+        myMap.remove(null);
+        myMap.remove("one");
         myMap.put(null, -1);
         myMap.put("one", 1);
         myMap.put("two", 2);
@@ -78,10 +110,10 @@ public class Main extends TestCase {
         assertTrue(myMap.contains("one"));
         assertTrue(myMap.contains("two"));
         assertTrue(myMap.contains("three"));
-        myMap.delete(null);
-        myMap.delete("one");
-        myMap.delete("two");
-        myMap.delete("three");
+        myMap.remove(null);
+        myMap.remove("one");
+        myMap.remove("two");
+        myMap.remove("three");
         assertFalse(myMap.contains(null));
         assertFalse(myMap.contains("one"));
         assertFalse(myMap.contains("two"));
@@ -96,7 +128,7 @@ public class Main extends TestCase {
         myMap.put("tac", 123);
         assertTrue(myMap.contains("tac"));
         assertTrue(myMap.contains("cat"));
-        myMap.delete("tac");
+        myMap.remove("tac");
         assertFalse(myMap.contains("tac"));
         int numberOfItems = 100000;
         String[] myStrings = new String[numberOfItems];
@@ -118,15 +150,50 @@ public class Main extends TestCase {
     }
 
     private static void testPrimeNumberGenerator() {
-        Watch myWatch = new Watch("PrimeNumbers");
+        Watch myWatch = new Watch("testPrimeNumberGenerator");
         myWatch.start();
         Prime myPrime = new Prime(11);
         int i = 0;
         while (i < 1001) {
-            System.out.print(myPrime.nextPrime());
-            System.out.println("\n");
+            myPrime.nextPrime();
             i++;
         }
         myWatch.stop();
     }
+
+    private static void testCustomEnumerator() {
+        Watch myWatch = new Watch("testCustomEnumerator");
+        myWatch.start();
+        int size = 10;
+        String[] myKeys = new String[size];
+        int[] myValues = new int[size];
+        String[] randomCharacters = new String[size];
+
+        randomCharacters[0] = "a";
+        randomCharacters[1] = "b";
+        randomCharacters[2] = "c";
+        randomCharacters[3] = "d";
+        randomCharacters[4] = "e";
+        randomCharacters[5] = "f";
+        randomCharacters[6] = "g";
+        randomCharacters[7] = "h";
+        randomCharacters[8] = "i";
+        randomCharacters[9] = "j";
+        int i = 0;
+
+        while (i < size) {
+            myKeys[i] = randomCharacters[i];
+            myValues[i] = i;
+            i++;
+        }
+
+        CustomEnumerator enumerator = new CustomEnumerator(size, myKeys, myValues, true);
+        i = 0;
+        while (i < 10) {
+            enumerator.nextElement();
+            i++;
+        }
+        myWatch.stop();
+    }
+
 }
