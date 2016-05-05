@@ -1,3 +1,4 @@
+import java.util.Enumeration;
 
 /**
  * Created by david on 4/19/16.
@@ -25,6 +26,7 @@ public class HashMap implements hash {
         index = checkIndex(key, index, this.keyTable, this.tableSize);
         if (keyTable[index] != null) {
             if (keyTable[index].compareTo(key) == 0) {
+                // in case of overwrite, remove one from size since it'll be added to below
                 size -= 1;
             }
         }
@@ -48,7 +50,7 @@ public class HashMap implements hash {
     }
 
     @Override
-    public void delete(String key) {
+    public void remove(String key) {
         if (key == null) {
             return;
         }
@@ -64,7 +66,12 @@ public class HashMap implements hash {
 
     @Override
     public int size() {
-        return size;
+        return this.size;
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return this.size > 0;
     }
 
     @Override
@@ -89,17 +96,32 @@ public class HashMap implements hash {
         size = 0;
     }
 
-    public String[] keys() {
+    public enumerator keys() {
         // TODO: added this for Watch support, need to return enumerator instead
         String[] keys = new String[size];
         int unUsedIndex = 0;
-
         for (String key: this.keyTable) {
             if (key != null) {
                 keys[unUsedIndex] = key;
+                unUsedIndex++;
             }
         }
-        return keys;
+        CustomEnumerator enumerator = new CustomEnumerator(size, keys, null, true);
+        return enumerator;
+    }
+
+    @Override
+    public enumerator elements() {
+        int[] values = new int[size];
+        int unUsedIndex = 0;
+        for (String key: this.keyTable) {
+            if (key != null) {
+                values[unUsedIndex] = get(key);
+                unUsedIndex++;
+            }
+        }
+        CustomEnumerator enumerator = new CustomEnumerator(size, null, values, false);
+        return enumerator;
     }
 
     private int hash(String key, int tableSize) {
@@ -123,6 +145,7 @@ public class HashMap implements hash {
 
     private int checkIndex(String key, int index, String[] keyTable, int tableSize) {
         if (indexTaken(key, index, keyTable)) {
+
             index = rehash(index, tableSize);
             checkIndex(key, index, keyTable, tableSize);
         }
@@ -157,4 +180,5 @@ public class HashMap implements hash {
             this.tableSize = newTableSize;
         }
     }
+
 }

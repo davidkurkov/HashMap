@@ -3,7 +3,7 @@
  * Created by david on 4/19/16.
  */
 public class Watch implements stopwatch {
-    static HashMap results;
+    static HashMap results = new HashMap();
     String event;
     int startTime;
     int endTime;
@@ -11,7 +11,6 @@ public class Watch implements stopwatch {
 
     Watch(String event) {
         this.event = event;
-        results = new HashMap();
     }
 
     @Override
@@ -29,13 +28,18 @@ public class Watch implements stopwatch {
     @Override
     public void printResults() {
         StringBuilder formattedResults = new StringBuilder();
-        for (String key: results.keys()) {
+        enumerator myEnum = results.keys();
+
+        Object key = myEnum.nextElement();
+        while (key != null) {
             formattedResults.append(key);
             formattedResults.append(" took ");
-            formattedResults.append(results.get(key));
+            formattedResults.append(results.get(key.toString()));
             formattedResults.append("s");
             formattedResults.append("\n");
+            key = myEnum.nextElement();
         }
+
         System.out.print(formattedResults);
     }
 }
